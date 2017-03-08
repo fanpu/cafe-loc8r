@@ -57,4 +57,7 @@ db.locations.update({
 })
 
 
+mongorestore -h ds121190.mlab.com:21190 -d heroku_1pq86whw -u fanpu -p herokudb tmp/mongodump/Loc8r
+
+mongo ds121190.mlab.com:21190/heroku_1pq86whw -u fanpu -p herokudb
 */
