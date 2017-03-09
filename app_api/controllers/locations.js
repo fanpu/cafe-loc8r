@@ -132,7 +132,7 @@ module.exports.locationsUpdateOne = function (req, res) {
 		}
 		location.name = req.body.name;
 		location.address = req.body.address;
-		location.facilities = req.body.facilities.split(",");
+		if(req.body.facilities) location.facilities = req.body.facilities.split(",");
 		location.coords = [parseFloat(req.body.lng), parseFloat(req.body.lat)];
 		location.openingTimes = [{
 		    days: req.body.days1,
@@ -155,4 +155,23 @@ module.exports.locationsUpdateOne = function (req, res) {
 	    }
 	);
 };
-module.exports.locationsDeleteOne = function (req, res) {};
+module.exports.locationsDeleteOne = function (req, res) {
+    var locationid = req.params.locationid;
+    if (locationid) {
+	Loc
+	    .findByIdAndRemove(locationid)
+	    .exec(
+		function(err, location) {
+		    if (err) {
+			sendJsonResponse(res, 404, err);
+			return;
+		    }
+		    sendJsonResponse(res, 204, null);
+		}
+	    );
+    } else {
+	helper.sendJsonRequest(res, 404, {
+	    "message": "No locationid"
+	});
+    }
+};
