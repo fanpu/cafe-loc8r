@@ -48,13 +48,59 @@ db.locations.update({
     $push: {
 	reviews: {
 	    author: 'Xiaodong',
-	    id: ObjectId(),
+	    _id: ObjectId(),
 	    rating: 1,
 	    timestamp: new Date("March 4, 2017"),
 	    reviewText: "Expensive brown water for white girls"
 	}
     }
 })
+
+db.locations.update({
+    name: 'Starbucks',
+    }, 
+    {
+    $push: {
+	reviews: {
+			"author" : "Tony Tan",
+			"rating" : 1,
+			"timestamp" : ISODate("2017-03-02T16:00:00Z"),
+			"reviewText" : "Needs more fried chicken wings."
+	}
+    }
+})
+
+
+
+	{
+			"author" : "Dr Hon",
+			"id" : ObjectId("58be281dd4bfa371e8d81f9b"),
+			"rating" : 5,
+			"timestamp" : ISODate("2017-03-05T16:00:00Z"),
+			"reviewText" : "What a great place, full of cute Hwachong girls. I can't say enough good things about it."
+		},
+		{
+			"author" : "Tony Tan",
+			"id" : ObjectId("58be2849d4bfa371e8d81f9c"),
+			"rating" : 1,
+			"timestamp" : ISODate("2017-03-02T16:00:00Z"),
+			"reviewText" : "Needs more fried chicken wings."
+		},
+		{
+			"author" : "Xiaodong",
+			"id" : ObjectId("58be2870d4bfa371e8d81f9d"),
+			"rating" : 1,
+			"timestamp" : ISODate("2017-03-03T16:00:00Z"),
+			"reviewText" : "Expensive brown water for white girls"
+		},
+		{
+			"author" : "Xiaodong",
+			"_id" : ObjectId("58bfbd9169f4a14d2666a704"),
+			"rating" : 1,
+			"timestamp" : ISODate("2017-03-03T16:00:00Z"),
+			"reviewText" : "Expensive brown water for white girls"
+		}
+
 
 
 mongorestore -h ds121190.mlab.com:21190 -d heroku_1pq86whw -u fanpu -p herokudb tmp/mongodump/Loc8r
