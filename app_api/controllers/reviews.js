@@ -68,12 +68,61 @@ module.exports.reviewsReadOne = function (req, res) {
 	});
     }
 };
-module.exports.reviewsUpdateOne = function (req, res) {};
+module.exports.reviewsUpdateOne = function (req, res) {
+    if (!req.params.locationid || !req.params.reviewid) {
+	helper.sendJsonResponse(res, 404, {
+	    "message": "Not found, locationid and reviewid are both required"
+	});
+	return;
+    }
+    Loc
+	.findById(req.params.locationid)
+	.select('reviews')
+	.exec(
+	    function(err, location) {
+		var thisReview;
+		if (!location) {
+		    helper.sendJsonResponse(res, 404, {
+			"message": "locationid not found"
+		    });
+		    return;
+		} else if (err) {
+		    helper.sendJsonResponse(res, 400, err);
+		    return;
+		}
+		if (location.reviews && location.reviews.length > 0) {
+		    thisReview = location.reviews.id(req.params.reviewid);
+		    if (!thisReview) {
+			helper.sendJsonResponse(res, 404, {
+			    "message": "reviewid not found_"
+			});
+		    } else {
+			thisReview.author = req.body.author;
+			thisReview.rating = req.body.rating;
+			thisReview.reviewText = req.body.reviewText;
+			location.save(function(err, location) {
+			    if (err) {
+				helper.sendJsonResponse(res, 404, err);
+			    } else {
+				updateAverageRating(location._id);
+				sendJsonResponse(res, 200, thisReview);
+			    }
+			});
+		    }
+		} else {
+		    helper.sendJsonResponse(res, 404, {
+			"message": "No review to update"
+		    });
+		}
+	    }
+	);
+    
+};
 module.exports.reviewsDeleteOne = function (req, res) {};
 
 var doAddReview = function(req, res, location) {
     if (!location) {
-	helper.sendJsonResponse(res, 404 {
+	helper.sendJsonResponse(res, 404, {
 	    "message": "locationid not found"
 	});
     } else {
@@ -113,7 +162,7 @@ var doSetAverageRating = function(location) {
     if (location.reviews && location.reviews.length > 0) {
 	reviewCount = location.reviews.length;
 	ratingTotal = 0;
-	for(i = 0; i < reviewCount, i++) ratingTotal += location.reviews[i].rating;
+	for(i = 0; i < reviewCount; i++) ratingTotal += location.reviews[i].rating;
 	ratingAverage = parseInt(ratingTotal / reviewCount, 10);
 	location.rating = ratingAverage;
 	location.save(function(err) {
