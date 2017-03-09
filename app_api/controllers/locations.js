@@ -163,10 +163,10 @@ module.exports.locationsDeleteOne = function (req, res) {
 	    .exec(
 		function(err, location) {
 		    if (err) {
-			sendJsonResponse(res, 404, err);
+			helper.sendJsonResponse(res, 404, err);
 			return;
 		    }
-		    sendJsonResponse(res, 204, null);
+		    helper.sendJsonResponse(res, 204, null);
 		}
 	    );
     } else {
