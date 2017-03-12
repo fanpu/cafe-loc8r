@@ -105,7 +105,7 @@ module.exports.reviewsUpdateOne = function (req, res) {
 				helper.sendJsonResponse(res, 404, err);
 			    } else {
 				updateAverageRating(location._id);
-				sendJsonResponse(res, 200, thisReview);
+				helper.sendJsonResponse(res, 200, thisReview);
 			    }
 			});
 		    }
@@ -183,7 +183,7 @@ var doAddReview = function(req, res, location) {
 	    } else {
 		updateAverageRating(location._id);
 		thisReview = location.reviews[location.reviews.length - 1];
-		sendJsonResponse(res, 201, thisReview);
+		helper.sendJsonResponse(res, 201, thisReview);
 	    }
 	});
     }

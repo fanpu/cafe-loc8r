@@ -36,6 +36,50 @@ module.exports.homelist = function(req, res) {
 };
 
 module.exports.locationInfo = function(req, res) {
+    getLocationInfo(req, res, function(req, res, responseData) {
+	renderDetailPage(req, res, responseData);
+    });
+};
+
+module.exports.addReview = function(req, res) {
+    getLocationInfo(req, res, function(req, res, responseData) {
+	renderReviewForm(req, res, responseData);
+    });
+};
+
+module.exports.doAddReview = function(req, res) {
+    var requestOptions, path, locationid, postdata;
+    locationid = req.params.locationid;
+    path = "/api/locations/" + locationid + '/reviews';
+    postdata = {
+	author: req.body.name,
+	rating: parseInt(req.body.rating, 10),
+	reviewText: req.body.review
+    };
+    requestOptions = {
+	url: apiOptions.server + path,
+	method: "POST",
+	json: postdata
+    };
+    if (!postdata.author || !postdata.rating || !postdata.reviewText) {
+	res.redirect('/location/' + locationid + '/reviews/new?err=val');
+    } else {
+	request(
+	    requestOptions,
+	    function(err, response, body) {
+		if(response.statusCode === 201) {
+		    res.redirect('/location/' + locationid);
+		} else if (response.statusCode === 400 && body.name && body.name === "ValidationError") {
+		    res.redirect('/location/' + locationid + '/reviews/new?err=val');
+		} else {
+		    _showError(req, res, response.statusCode);
+		}
+	    }
+	);
+    }
+}
+
+var getLocationInfo = function (req, res, callback) {
     var requestOptions, path;
     path = "/api/locations/" + req.params.locationid;
     requestOptions = {
@@ -52,16 +96,20 @@ module.exports.locationInfo = function(req, res) {
 		    lng : body.coords[0],
 		    lat : body.coords[1]
 		};
-		renderDetailPage(req, res, data);
+		callback(req, res, data);
+	    } else {
+		_showError(req, res, response.statusCode);
 	    }
 	}
     );
-};
 
-module.exports.addReview = function(req, res) {
+}
+
+var renderReviewForm = function (req, res, locDetail) {
     res.render('location-review-form', {
-	title: 'Review Starcups on Loc8r',
-	pageHeader: { title: 'Review Starcups'}
+	title: 'Review ' + locDetail.name + ' on Loc8r',
+	pageHeader: { title: 'Review ' + locDetail.name },
+	error: req.query.err
     });
 };
 
@@ -88,8 +136,6 @@ var renderHomepage = function(req, res, responseBody) {
 };
 
 var renderDetailPage = function (req, res, locDetail) {
-    console.log("PRAISE KEK");
-    console.log(locDetail);
     res.render('location-info', {
 	title: locDetail.name,
 	pageHeader: {title: locDetail.name},
@@ -99,7 +145,7 @@ var renderDetailPage = function (req, res, locDetail) {
 	},
 	location: locDetail
     });
-}
+};
 
 var _formatDistance = function (distance) {
     var numDistance, unit, modifier = 1000000;
@@ -112,4 +158,20 @@ var _formatDistance = function (distance) {
 	unit = 'm';
     }
     return numDistance + unit;
+};
+
+var _showError = function (req, res, status) {
+    var title, content;
+    if (status === 404) {
+	title = "404, page not found";
+	content = "Oh dear. Looks like we can't find this page. Sorry.";
+    } else {
+	title = status + ", something's gone wrong";
+	content = "Something, somewhere, has gone just a little bit wrong.";
+    }
+    res.status(status);
+    res.render('generic-text', {
+	title : title,
+	content : content
+    });
 };
