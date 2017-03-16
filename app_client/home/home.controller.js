@@ -5,7 +5,7 @@
     homeCtrl.$inject = ['$scope', 'loc8rData', 'geolocation'];
     function homeCtrl ($scope, loc8rData, geolocation) {
 	var vm = this;
-	vm.pageheader = {
+	vm.pageHeader = {
 	    title: 'Loc8r',
 	    strapline: 'Find places to work with wifi near you!;'
 	};

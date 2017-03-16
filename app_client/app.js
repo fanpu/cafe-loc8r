@@ -1,7 +1,7 @@
 (function () {
     angular.module('loc8rApp', ['ngRoute']);
 
-    function config ($routeProvider) {
+    function config ($routeProvider, $locationProvider) {
 	$routeProvider
 	    .when('/', {
 		templateUrl: 'home/home.view.html',
@@ -9,6 +9,8 @@
 		controllerAs: 'vm'
 	    })
 	    .otherwise({redirectTo: '/'});
+
+	$locationProvider.html5Mode(true);
     }
 
     angular
