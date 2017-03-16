@@ -1,9 +1,0 @@
-<!DOCTYPE html>
-<html ng-app="myApp">
-  <body ng-controller="myController">
-    <input ng-model="myInput" />
-    <h1>Hello {{ myInput }}</h1>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.2/angular.min.js" />
-    <script src=angular.js" />
-  </body>
-</html>
