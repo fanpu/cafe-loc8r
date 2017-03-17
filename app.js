@@ -21,6 +21,8 @@ var appClientFiles = [
     'app_client/app.js',
     'app_client/home/home.controller.js',
     'app_client/about/about.controller.js',
+    'app_client/locationDetail/locationDetail.controller.js',
+    'app_client/reviewModal/reviewModal.controller.js',
     'app_client/common/services/geolocation.service.js',
     'app_client/common/services/loc8rData.service.js',
     'app_client/common/filters/formatDistance.filter.js',
@@ -29,6 +31,7 @@ var appClientFiles = [
     'app_client/common/directives/navigation/navigation.directive.js',
     'app_client/common/directives/pageHeader/pageHeader.directive.js',
     'app_client/common/filters/addHtmlLineBreaks.filter.js',
+    
 ];
 var uglified = uglifyJs.minify(appClientFiles, { compress : false });
 

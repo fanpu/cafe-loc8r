@@ -1,0 +1,8 @@
+(function () {
+    angular
+	.module('loc8rApp')
+	.controller('reviewModalCtrl', reviewModalCtrl);
+
+    reviewModalCtrl.$inject = ['$modalInstance'];
+    
+})();
