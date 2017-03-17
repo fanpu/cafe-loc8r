@@ -20,7 +20,7 @@
 	    });
 
 	vm.popupReviewForm = function () {
-	    var modelInstance = $modal.open({
+	    var modalInstance = $modal.open({
 		templateUrl: '/reviewModal/reviewModal.view.html',
 		controller: 'reviewModalCtrl as vm',
 		resolve: {
@@ -32,7 +32,10 @@
 		    }
 		}
 	    });
-g	};
+	    modalInstance.result.then(function (data) {
+		vm.data.location.reviews.push(data);
+	    });
+	};
     }
 
 })();
