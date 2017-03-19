@@ -5,24 +5,29 @@ var helper = require('./common');
 
 module.exports.reviewsCreate = function (req, res) {
     var locationid = req.params.locationid;
-    if (locationid) {
-	Loc
-	    .findById(locationid)
-	    .select('reviews')
-	    .exec(
-		function(err, location) {
-		    if (err) {
-			helper.sendJsonResponse(res, 400, err);
-		    } else {
-			doAddReview(req, res, location);
+    
+    getAuthor(req, res, function (req, res, userName) {
+	if (locationid) {
+	    Loc
+		.findById(locationid)
+		.select('reviews')
+		.exec(
+		    function(err, location) {
+			if (err) {
+			    helper.sendJsonResponse(res, 400, err);
+			} else {
+			    doAddReview(req, res, location, userName);
+			}
 		    }
-		}
-	    );
-    } else {
-	helper.sendJsonResponse(res, 404, {
-	    "message": "Not found, locationid required"
-	});
-    }
+		);
+	} else {
+	    helper.sendJsonResponse(res, 404, {
+		"message": "Not found, locationid required"
+	    });
+	}
+	
+    });
+
 };
 module.exports.reviewsReadOne = function (req, res) {
     if (req.params && req.params.locationid && req.params.reviewid) {
