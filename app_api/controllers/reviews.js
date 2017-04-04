@@ -170,14 +170,41 @@ module.exports.reviewsDeleteOne = function (req, res) {
 	);
 };
 
-var doAddReview = function(req, res, location) {
+var User = mongoose.model('User');
+var getAuthor = function(req, res, callback) {
+    if (req.payload && req.payload.email) {
+	User
+	    .findOne({ email : req.payload.email })
+	    .exec(function(err, user) {
+		if(!user) {
+		    sendJSONresponse(res, 404, {
+			"message": "User not found"
+		    });
+		    return;
+		} else if (err) {
+		    console.log(err);
+		    sendJSONresponse(res, 404, err);
+		    return;
+		}
+		callback(req, res, user.name);
+	    });
+    } else {
+	sendJSONresponse(res, 404, {
+	    "message": "User not found"
+	});
+	return;
+    }
+
+};
+
+var doAddReview = function(req, res, location, author) {
     if (!location) {
 	helper.sendJsonResponse(res, 404, {
 	    "message": "locationid not found"
 	});
     } else {
 	location.reviews.push({
-	    author: req.body.author,
+	    author: author,
 	    rating: req.body.rating,
 	    reviewText: req.body.reviewText
 	});
